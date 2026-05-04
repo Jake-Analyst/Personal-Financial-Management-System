@@ -1,0 +1,8 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">📑 Financial Report</h2>
+<div id="reportContent">Loading report...</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/report.js') }}"></script>
+{% endblock %}

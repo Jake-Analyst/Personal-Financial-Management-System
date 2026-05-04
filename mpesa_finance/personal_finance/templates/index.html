@@ -1,0 +1,268 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JAKE Financial Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Courier+Prime&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #1a1208;
+      --ink-light: #4a3b20;
+      --parchment: #f5f0e8;
+      --parchment-dark: #e8e0ce;
+      --rule: #c4b89a;
+      --accent: #8b1a1a;
+      --gold: #a07830;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #2a2a2a;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .page {
+      background: var(--parchment);
+      border: 1px solid var(--rule);
+      border-top: 4px double var(--ink);
+      border-bottom: 4px double var(--ink);
+      width: 100%;
+      max-width: 640px;
+    }
+    .letterhead {
+      background: var(--ink);
+      padding: 1.6rem 2.5rem 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 1.3rem;
+      border-bottom: 3px solid var(--gold);
+    }
+    .seal {
+      width: 52px; height: 52px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .seal svg { width: 32px; height: 32px; }
+    .letterhead-text { flex: 1; }
+    .letterhead-text h1 {
+      font-family: 'IM Fell English', serif;
+      color: #f5f0e8;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      line-height: 1.1;
+    }
+    .letterhead-text h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .letterhead-text .sub {
+      font-family: 'Courier Prime', monospace;
+      color: var(--gold);
+      font-size: 9.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-top: 5px;
+      border-top: 1px solid #3a2e1a;
+      padding-top: 5px;
+    }
+    .divider-rule {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 2.5rem; margin: 1.4rem 0 0;
+    }
+    .divider-rule span { height: 1px; flex: 1; background: var(--rule); }
+    .divider-rule em {
+      font-family: 'IM Fell English', serif;
+      font-style: italic; font-size: 13px;
+      color: var(--ink-light); white-space: nowrap;
+    }
+    .body-section { padding: 0.5rem 2.5rem 1.8rem; }
+    .instruction {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px; color: var(--ink-light);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      border-left: 2px solid var(--accent);
+      padding-left: 10px; margin: 1.2rem 0 1rem;
+      line-height: 1.6;
+    }
+    .field-row {
+      display: flex; align-items: center;
+      border: 1px solid var(--rule);
+      border-bottom: 2px solid var(--ink);
+      background: #fffdf8; margin-bottom: 1.2rem;
+    }
+    .field-label {
+      background: var(--parchment-dark);
+      border-right: 1px solid var(--rule);
+      padding: 0.7rem 1rem;
+      font-family: 'IM Fell English', serif;
+      font-style: italic; font-size: 13px;
+      color: var(--ink-light); white-space: nowrap; min-width: 130px;
+    }
+    .file-input-wrap {
+      flex: 1; display: flex; align-items: center;
+      padding: 0 0.8rem; gap: 10px;
+    }
+    input[type="file"] { display: none; }
+    .choose-btn {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--ink);
+      border: 1px solid var(--ink-light);
+      background: var(--parchment-dark);
+      padding: 5px 14px; cursor: pointer; white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .choose-btn:hover { background: var(--rule); }
+    .file-name {
+      font-family: 'Courier Prime', monospace;
+      font-size: 12px; color: var(--ink-light);
+      flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .submit-row {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--rule); padding-top: 1.2rem; margin-top: 0.4rem;
+    }
+    .ref-number {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px; color: var(--rule); letter-spacing: 0.1em;
+    }
+    .process-btn {
+      font-family: 'IM Fell English', serif;
+      font-size: 15px; letter-spacing: 0.12em;
+      color: #fffdf8; background: var(--ink);
+      border: none; border-bottom: 3px solid var(--gold);
+      padding: 0.7rem 2.2rem; cursor: pointer;
+      position: relative; overflow: hidden; transition: background 0.2s;
+    }
+    .process-btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--accent); transform: scaleX(0);
+      transform-origin: left; transition: transform 0.25s ease;
+    }
+    .process-btn:hover::before { transform: scaleX(1); }
+    .process-btn span { position: relative; z-index: 1; }
+    .footer-strip {
+      background: var(--parchment-dark);
+      border-top: 1px solid var(--rule);
+      padding: 0.65rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-strip p {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px; color: var(--ink-light); letter-spacing: 0.08em;
+    }
+    .footer-strip strong { color: var(--accent); letter-spacing: 0.14em; }
+    .status-bar {
+      display: none; align-items: center; gap: 8px;
+      background: #f0ede3; border: 1px solid var(--rule);
+      border-left: 3px solid var(--gold);
+      padding: 0.6rem 1rem; margin-top: 0.8rem;
+    }
+    .status-bar p {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px; color: var(--ink-light); letter-spacing: 0.06em;
+    }
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gold); flex-shrink: 0;
+      animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+    <div class="letterhead">
+      <div class="seal">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="14" r="12" stroke="#a07830" stroke-width="1.2"/>
+          <circle cx="14" cy="14" r="8" stroke="#a07830" stroke-width="0.6" stroke-dasharray="2 2"/>
+          <path d="M14 6 L16 11 L22 11 L17.5 14.5 L19.5 20 L14 16.5 L8.5 20 L10.5 14.5 L6 11 L12 11 Z" fill="#a07830"/>
+        </svg>
+      </div>
+      <div class="letterhead-text">
+        <h1><em>JAKE</em> Financial Management System</h1>
+        <div class="sub">M-Pesa Statement Analysis &nbsp;&middot;&nbsp; Est. MMXXIV</div>
+      </div>
+    </div>
+
+    <div class="divider-rule">
+      <span></span>
+      <em>M-Pesa Transaction Statement</em>
+      <span></span>
+    </div>
+
+    <div class="body-section">
+      <p class="instruction">Submit your official M-Pesa statement below<br>for automated ledger analysis &amp; classification</p>
+
+      <!-- The form actually submits to Flask -->
+      <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+        <div class="field-row">
+          <div class="field-label">Statement File</div>
+          <div class="file-input-wrap">
+            <button type="button" class="choose-btn" onclick="document.getElementById('mpesa-file').click()">Browse</button>
+            <input type="file" id="mpesa-file" name="file" accept=".csv,.xlsx,.xls,.xlsm" onchange="updateFileName(this)"/>
+            <span class="file-name" id="file-display">No document selected</span>
+          </div>
+        </div>
+
+        <div id="status-msg" class="status-bar">
+          <div class="dot"></div>
+          <p id="status-text">Processing statement — please stand by...</p>
+        </div>
+
+        <div class="submit-row">
+          <span class="ref-number">REF · JK-<span id="ref-num">000000</span></span>
+          <button type="submit" class="process-btn" onclick="handleProcess()">
+            <span>Process Statement &#8594;</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="footer-strip">
+      <p>Authorised use only &mdash; confidential financial record</p>
+      <p><strong>JAKE</strong> &nbsp;Financial Management System</p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('ref-num').textContent = Math.floor(100000 + Math.random() * 900000);
+
+    function updateFileName(input) {
+      const display = document.getElementById('file-display');
+      display.textContent = input.files.length ? input.files[0].name : 'No document selected';
+      document.getElementById('status-msg').style.display = 'none';
+    }
+
+    function handleProcess() {
+      const file = document.getElementById('mpesa-file').files[0];
+      const bar = document.getElementById('status-msg');
+      const txt = document.getElementById('status-text');
+      if (!file) {
+        bar.style.borderLeftColor = '#8b1a1a';
+        bar.style.display = 'flex';
+        txt.textContent = 'No file selected — please choose a statement document first.';
+        // Prevent form submission
+        event.preventDefault();
+        return;
+      }
+      bar.style.borderLeftColor = '#a07830';
+      bar.style.display = 'flex';
+      txt.textContent = 'Processing statement — please stand by...';
+      // Let the form submit naturally now. (No event.preventDefault())
+    }
+  </script>
+
+</body>
+</html>

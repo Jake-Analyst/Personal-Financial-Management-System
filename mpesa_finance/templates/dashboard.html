@@ -1,0 +1,154 @@
+﻿{% extends "base.html" %}
+{% block content %}
+
+<!-- Smart AI Header -->
+<div class="mb-2">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+    <div>
+      <h1 class="text-xl sm:text-2xl font-bold" id="greeting">Good evening 👋</h1>
+      <p class="text-slate-400 text-xs mt-0.5" id="aiInsight">Loading AI insights...</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+      <span class="text-xs text-slate-400">AI Active</span>
+    </div>
+  </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2" id="kpiCards">
+  <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50 hover:border-accent/40 transition-all group">
+    <div class="flex items-center justify-between mb-1">
+      <div class="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center"><i class="fas fa-wallet text-accent-light text-sm"></i></div>
+      <span class="text-xs font-medium text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full flex items-center gap-1" id="balanceTrend"><i class="fas fa-arrow-up text-[10px]"></i><span>0%</span></span>
+    </div>
+    <p class="text-slate-400 text-xs uppercase tracking-wider">Balance</p>
+    <h3 class="text-lg sm:text-xl font-bold" id="totalBalance">KES 0</h3>
+    <canvas id="sparkBalance" class="mt-1 h-6"></canvas>
+  </div>
+  <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50 hover:border-green-500/40 transition-all group">
+    <div class="flex items-center justify-between mb-1">
+      <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center"><i class="fas fa-arrow-down text-green-400 text-sm"></i></div>
+      <span class="text-xs font-medium text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full flex items-center gap-1" id="incomeTrend"><i class="fas fa-arrow-up text-[10px]"></i><span>0%</span></span>
+    </div>
+    <p class="text-slate-400 text-xs uppercase tracking-wider">Income</p>
+    <h3 class="text-lg sm:text-xl font-bold" id="totalIncome">KES 0</h3>
+    <canvas id="sparkIncome" class="mt-1 h-6"></canvas>
+  </div>
+  <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50 hover:border-red-500/40 transition-all group">
+    <div class="flex items-center justify-between mb-1">
+      <div class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center"><i class="fas fa-arrow-up text-red-400 text-sm"></i></div>
+      <span class="text-xs font-medium text-red-400 bg-red-400/10 px-2 py-0.5 rounded-full flex items-center gap-1" id="expenseTrend"><i class="fas fa-arrow-down text-[10px]"></i><span>0%</span></span>
+    </div>
+    <p class="text-slate-400 text-xs uppercase tracking-wider">Expenses</p>
+    <h3 class="text-lg sm:text-xl font-bold" id="totalExpenses">KES 0</h3>
+    <canvas id="sparkExpense" class="mt-1 h-6"></canvas>
+  </div>
+  <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50 hover:border-purple-500/40 transition-all group">
+    <div class="flex items-center justify-between mb-1">
+      <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center"><i class="fas fa-piggy-bank text-purple-400 text-sm"></i></div>
+      <span class="text-xs font-medium text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded-full flex items-center gap-1" id="savingsTrend"><i class="fas fa-minus text-[10px]"></i><span>0%</span></span>
+    </div>
+    <p class="text-slate-400 text-xs uppercase tracking-wider">Savings Rate</p>
+    <h3 class="text-lg sm:text-xl font-bold" id="savingsRate">0%</h3>
+    <canvas id="sparkSavings" class="mt-1 h-6"></canvas>
+  </div>
+</div>
+
+<!-- Compact Filter Bar -->
+<div class="bg-surface-light rounded-xl p-2 mb-2 border border-slate-700/50 sticky top-16 z-40">
+  <div class="flex flex-wrap items-center gap-2">
+    <i class="fas fa-calendar text-slate-400 text-xs"></i>
+    <input type="date" id="startDate" class="bg-surface text-slate-200 text-xs rounded-lg px-2 py-1.5 border border-slate-600 focus:border-accent outline-none w-32">
+    <span class="text-slate-500 text-xs">→</span>
+    <input type="date" id="endDate" class="bg-surface text-slate-200 text-xs rounded-lg px-2 py-1.5 border border-slate-600 focus:border-accent outline-none w-32">
+    <div class="flex flex-wrap gap-1.5" id="categoryChips">
+      <button class="category-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-accent text-white" data-category="">All</button>
+    </div>
+    <div class="flex gap-1.5 ml-auto">
+      <button class="quick-filter px-2.5 py-1 rounded-lg text-xs font-medium bg-surface-lighter text-slate-300 hover:bg-accent/20 hover:text-accent-light transition-all" data-range="7">Week</button>
+      <button class="quick-filter px-2.5 py-1 rounded-lg text-xs font-medium bg-surface-lighter text-slate-300 hover:bg-accent/20 hover:text-accent-light transition-all" data-range="30">Month</button>
+      <button class="quick-filter px-2.5 py-1 rounded-lg text-xs font-medium bg-surface-lighter text-slate-300 hover:bg-accent/20 hover:text-accent-light transition-all" data-range="90">3 Months</button>
+      <button class="quick-filter px-2.5 py-1 rounded-lg text-xs font-medium bg-surface-lighter text-slate-300 hover:bg-accent/20 hover:text-accent-light transition-all" id="clearCategoryFilter" style="display:none;">✕ Clear Filter</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-2" style="height: calc(100vh - 280px); min-height: 500px;">
+  
+  <!-- LEFT: Main Charts -->
+  <div class="lg:col-span-2 grid grid-cols-1 gap-2 h-full overflow-y-auto pr-1">
+    <!-- Spending Trend -->
+    <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50" style="min-height: 180px; max-height: 240px;">
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-2"><i class="fas fa-chart-line text-accent-light"></i> Spending Trend</h3>
+      <div style="height: calc(100% - 20px);"><canvas id="lineChart"></canvas></div>
+    </div>
+    
+    <!-- Row: Donut + Weekday -->
+    <div class="grid grid-cols-2 gap-2">
+      <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50 cursor-pointer" style="height: 220px;" id="donutContainer" title="Click a category to filter">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-2"><i class="fas fa-chart-pie text-accent-light"></i> Categories <span class="text-[10px] text-slate-500">(click to filter)</span></h3>
+        <div style="height: calc(100% - 20px);"><canvas id="donutChart"></canvas></div>
+      </div>
+      <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50" style="height: 220px;">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-2"><i class="fas fa-calendar-week text-accent-light"></i> By Weekday</h3>
+        <div style="height: calc(100% - 20px);"><canvas id="weekdayChart"></canvas></div>
+      </div>
+    </div>
+    
+    <!-- Row: Hourly + Heatmap -->
+    <div class="grid grid-cols-2 gap-2">
+      <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50" style="height: 220px;">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-2"><i class="far fa-clock text-accent-light"></i> By Hour</h3>
+        <div style="height: calc(100% - 20px);"><canvas id="hourChart"></canvas></div>
+      </div>
+      <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50" style="height: 220px;">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-2"><i class="fas fa-th text-accent-light"></i> Heatmap</h3>
+        <div style="height: calc(100% - 20px); position: relative;" id="heatmapContainer">
+          <canvas id="heatmapCanvas"></canvas>
+          <div id="heatmapTooltip" class="absolute hidden bg-surface-lighter text-white text-xs rounded-lg px-3 py-2 border border-slate-600 shadow-xl pointer-events-none z-50" style="top: 0; left: 0;"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Senders + Recipients -->
+    <div class="grid grid-cols-2 gap-2">
+      <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50" style="height: 220px;">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-2"><i class="fas fa-hand-holding-usd text-green-400"></i> Top Senders</h3>
+        <div style="height: calc(100% - 20px);"><canvas id="senderChart"></canvas></div>
+      </div>
+      <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50" style="height: 220px;">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-2"><i class="fas fa-receipt text-red-400"></i> Top Recipients</h3>
+        <div style="height: calc(100% - 20px);"><canvas id="recipientChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- RIGHT: Insights Panel -->
+  <div class="space-y-2 h-full overflow-y-auto">
+    <div class="bg-gradient-to-br from-accent/20 to-purple-500/20 rounded-xl p-3 border border-accent/30">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="w-6 h-6 bg-accent rounded-lg flex items-center justify-center"><i class="fas fa-robot text-white text-xs"></i></div>
+        <span class="font-semibold text-xs text-accent-light">AI Insights</span>
+      </div>
+      <div id="aiInsightsList" class="space-y-2 text-xs text-slate-300"></div>
+    </div>
+    <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50">
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2"><i class="fas fa-heartbeat text-red-400"></i> Budget Health</h3>
+      <div class="mb-1 flex justify-between text-xs text-slate-400"><span>Budget Usage</span><span id="budgetPercent">0%</span></div>
+      <div class="w-full bg-surface rounded-full h-2.5 overflow-hidden"><div id="budgetBar" class="h-full bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 rounded-full transition-all duration-700" style="width: 0%"></div></div>
+      <p class="text-xs text-slate-500 mt-1" id="budgetLabel">No budget set</p>
+    </div>
+    <div class="bg-surface-light rounded-xl p-3 border border-slate-700/50">
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2"><i class="fas fa-crystal-ball text-purple-400"></i> Forecast</h3>
+      <div class="flex justify-between text-xs"><span class="text-slate-400">Projected</span><span class="font-semibold text-white" id="forecastAmount">KES 0</span></div>
+      <div class="flex justify-between text-xs mt-1"><span class="text-slate-400">Recommended Save</span><span class="font-semibold text-green-400" id="forecastSave">KES 0</span></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,17 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow p-4">
+      <h3 class="text-center mb-4">Upload M-Pesa CSV</h3>
+      <form action="/upload" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <input type="file" name="file" accept=".csv" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Process File</button>
+      </form>
+      <p class="text-muted small mt-3 text-center">Expected columns: Receipt No., Completion Date, Details, Transaction Status, Paid In, Withdrawn, Balance</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+﻿/* Premium Dark Mode Fintech Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+*, body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+
+/* Smooth scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* Glassmorphism cards */
+.glass-card {
+  background: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Number animation */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in { animation: countUp 0.5s ease-out forwards; }
+
+/* Category chips */
+.category-chip {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.category-chip:hover {
+  transform: translateY(-1px);
+}
+
+/* KPI card hover */
+#kpiCards > div {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#kpiCards > div:hover {
+  transform: translateY(-4px);
+}
+
+/* Pulse dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.animate-pulse { animation: pulse-dot 2s infinite; }
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .kpi-value { font-size: 1.25rem; }
+  canvas { max-height: 200px; }
+}

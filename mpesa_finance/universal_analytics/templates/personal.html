@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Finance · JAKE</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+  <style>
+    body { background: #0f172a; font-family: 'Inter', system-ui, sans-serif; color: #e2e8f0; margin:0; padding:2rem; }
+    .card { background: #1e293b; border-radius:1rem; padding:1.2rem; border:1px solid #334155; }
+    .kpi-value { font-size:2rem; font-weight:700; }
+  </style>
+</head>
+<body class="max-w-7xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-white">PERSONAL FINANCE</h1>
+    <a href="/" class="text-sm text-gray-400 hover:text-white"><i class="fas fa-upload mr-1"></i> Upload new</a>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="space-y-6">
+      <div class="grid grid-cols-3 gap-4">
+        <div class="card text-center"><p class="text-gray-400 text-sm">Income</p><p class="kpi-value text-green-400" id="kpiIncome">KES 0</p></div>
+        <div class="card text-center"><p class="text-gray-400 text-sm">Expenses</p><p class="kpi-value text-red-400" id="kpiExpenses">KES 0</p></div>
+        <div class="card text-center"><p class="text-gray-400 text-sm">Balance</p><p class="kpi-value text-indigo-400" id="kpiBalance">KES 0</p></div>
+      </div>
+      <div class="card">
+        <h3 class="text-lg font-semibold text-white mb-3"><i class="fas fa-chart-pie text-purple-400"></i> Spending by Category</h3>
+        <div style="height:250px"><canvas id="donutChart"></canvas></div>
+      </div>
+    </div>
+    <div class="space-y-6">
+      <div class="card">
+        <h3 class="text-lg font-semibold text-white mb-3"><i class="fas fa-receipt text-red-400"></i> Where I Spend Money</h3>
+        <div style="height:300px"><canvas id="counterpartyBar"></canvas></div>
+      </div>
+      <div class="card" style="background: linear-gradient(135deg, #1e293b 0%, #2d1b4e 100%); border-color:#8b5cf6;">
+        <h3 class="text-lg font-semibold text-white mb-3"><i class="fas fa-robot text-purple-400"></i> AI Insights</h3>
+        <ul id="insightsList" class="space-y-2 text-sm text-gray-300 list-disc list-inside"></ul>
+        <p class="text-xs text-gray-500 mt-4 text-center">Built by <span class="text-indigo-400">JAKE</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-6">
+    <div class="flex justify-between items-center">
+      <span class="text-gray-400 text-sm">Budget Usage</span>
+      <span class="text-white font-bold" id="budgetPercent">0%</span>
+    </div>
+    <div class="w-full bg-gray-700 rounded-full h-2 mt-2"><div id="budgetBar" class="h-2 rounded-full bg-gradient-to-r from-green-500 to-red-500 transition-all" style="width:0%"></div></div>
+    <p class="text-xs text-gray-500 mt-1" id="budgetLabel">--</p>
+  </div>
+
+  <script>
+    (async () => {
+      try {
+        const summary = await fetch('/api/summary').then(r => r.json());
+        const catData = await fetch('/api/category_spending').then(r => r.json());
+        const counterparties = await fetch('/api/top_expense_recipients?limit=8').then(r => r.json());
+
+        document.getElementById('kpiIncome').textContent = 'KES ' + summary.income.toLocaleString();
+        document.getElementById('kpiExpenses').textContent = 'KES ' + summary.expenses.toLocaleString();
+        document.getElementById('kpiBalance').textContent = 'KES ' + summary.balance.toLocaleString();
+
+        new Chart(document.getElementById('donutChart'), {
+          type: 'doughnut',
+          data: {
+            labels: catData.map(d => d.category),
+            datasets: [{
+              data: catData.map(d => d.amount),
+              backgroundColor: ['#6366f1','#8b5cf6','#ec4899','#f59e0b','#10b981','#3b82f6','#ef4444'],
+              borderWidth:0
+            }]
+          },
+          options: {
+            responsive:true, maintainAspectRatio:true,
+            plugins: { legend: { position:'bottom', labels:{color:'#94a3b8', padding:16, usePointStyle:true}} }
+          }
+        });
+
+        new Chart(document.getElementById('counterpartyBar'), {
+          type: 'bar', indexAxis: 'y',
+          data: {
+            labels: counterparties.map(c => c.name.length>20?c.name.substring(0,18)+'…':c.name),
+            datasets: [{ data: counterparties.map(c => c.amount), backgroundColor:'#ef4444', borderRadius:4 }]
+          },
+          options: {
+            responsive:true, maintainAspectRatio:false,
+            plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>'KES '+ctx.parsed.x.toLocaleString()}} },
+            scales: { x:{ticks:{color:'#94a3b8'},grid:{color:'rgba(148,163,184,0.1)'}}, y:{ticks:{color:'#94a3b8'},grid:{display:false}} }
+          }
+        });
+
+        const insights = await fetch('/api/insights').then(r => r.json());
+        document.getElementById('insightsList').innerHTML = insights.map(i => `<li>${i}</li>`).join('');
+
+        if(summary.income>0){
+          const usage = summary.expenses/(summary.income*0.7)*100;
+          const pct = Math.min(usage,100).toFixed(0);
+          document.getElementById('budgetPercent').textContent = pct+'%';
+          document.getElementById('budgetBar').style.width = pct+'%';
+          document.getElementById('budgetLabel').textContent = usage>100?'Over budget':'Finances healthy';
+        }
+      } catch(e) {
+        document.body.innerHTML = '<div class="text-white text-center p-8">Upload a file to see your dashboard.</div>';
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M-Pesa Finance AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            surface: { DEFAULT: '#0f172a', light: '#1e293b', lighter: '#334155' },
+            accent: { DEFAULT: '#6366f1', light: '#818cf8', dark: '#4f46e5' },
+            success: '#10b981',
+            danger: '#ef4444',
+            warning: '#f59e0b'
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-surface min-h-screen text-slate-200 font-sans antialiased">
+  <!-- Premium Navigation -->
+  <nav class="sticky top-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-slate-700/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 bg-gradient-to-br from-accent to-purple-500 rounded-xl flex items-center justify-center shadow-lg shadow-accent/30">
+            <i class="fas fa-chart-line text-white text-sm"></i>
+          </div>
+          <span class="text-xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">M‑Pesa AI</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <a href="/" class="px-3 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-surface-light transition-all duration-200 flex items-center gap-2">
+            <i class="fas fa-upload text-xs"></i><span class="hidden sm:inline">Upload</span>
+          </a>
+          <a href="/dashboard" class="px-3 py-2 rounded-xl text-sm font-medium bg-accent/20 text-accent-light flex items-center gap-2 shadow-inner shadow-accent/10">
+            <i class="fas fa-chart-pie text-xs"></i><span class="hidden sm:inline">Dashboard</span>
+          </a>
+          <a href="/report" class="px-3 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-surface-light transition-all duration-200 flex items-center gap-2">
+            <i class="fas fa-file-alt text-xs"></i><span class="hidden sm:inline">Report</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
